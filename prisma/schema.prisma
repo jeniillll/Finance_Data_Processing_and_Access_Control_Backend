@@ -1,0 +1,81 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+//-----------------------------------------------//
+//-----------------  RBAC  ----------------------//
+//-----------------------------------------------//
+
+// ----------------------- APP TABLE -----------------------
+model AppTable {
+  id          Int    @id @default(autoincrement())
+  tablename   String @unique
+  displayname String @unique
+
+  perms     RolePermission[]
+}
+
+// ----------------------- USER -----------------------
+model User {
+  id            Int     @id @default(autoincrement())
+  contactnumber String  @unique
+  fullname      String
+  email         String? @unique
+  isDeleted     Boolean @default(false)
+
+  roles           UserRole[]
+}
+
+// ----------------------- ROLE -----------------------
+model Role {
+  id       Int              @id @default(autoincrement())
+  rolename String           @unique
+  users    UserRole[]
+  perms    RolePermission[]
+}
+
+// ----------------------- USER ROLE  -----------------------
+model UserRole {
+  id        Int     @id @default(autoincrement())
+  userId    Int
+  roleId    Int
+  isDeleted Boolean @default(false)
+
+  user User @relation(fields: [userId], references: [id])
+  role Role @relation(fields: [roleId], references: [id])
+
+  @@unique([userId, roleId])
+}
+
+// ----------------------- OPERATION -----------------------
+model Operation {
+  id            Int    @id @default(autoincrement())
+  operationname String @unique
+
+  perms RolePermission[]
+}
+
+// ----------- Role Permission ------------------//
+model RolePermission {
+  id          Int     @id @default(autoincrement())
+  roleId      Int
+  tableId     Int
+  operationId Int
+  isDeleted   Boolean @default(false)
+
+  role      Role      @relation(fields: [roleId], references: [id])
+  table     AppTable  @relation(fields: [tableId], references: [id])
+  operation Operation @relation(fields: [operationId], references: [id])
+
+  @@unique([roleId, tableId, operationId])
+}

@@ -48,3 +48,5 @@ next-env.d.ts
 # dummy login
 
 /routes/dlogin.route.js
+
+/generated/prisma

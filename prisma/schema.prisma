@@ -30,7 +30,8 @@ model User {
   id            Int     @id @default(autoincrement())
   contactnumber String  @unique
   fullname      String
-  email         String? @unique
+  email         String @unique
+  password      String
   isDeleted     Boolean @default(false)
 
   roles           UserRole[]

@@ -1,11 +1,37 @@
-import express from 'express'
-const app = express()
-const port = 3000
+import express from "express"
+import cookieParser from 'cookie-parser';
 
-app.get('/', (req, res) => {
-  res.send('Hello World!')
-})
+import dotenv from "dotenv";
+dotenv.config();
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
-})
+// auth
+import authRoutes from './routes/auth.route.js';
+
+// rbac
+import apptableRoutes from './routes/rbacRoutes/apptable.routes.js';
+import permissionRoutes from './routes/rbacRoutes/permission.routes.js';
+import operationRoutes from './routes/rbacRoutes/operation.routes.js';
+import roleRoutes from './routes/rbacRoutes/role.route.js';
+import assignRoleRoutes from './routes/rbacRoutes/userrole.route.js';
+
+
+const app = express();
+const PORT = process.env.PORT;
+
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cookieParser());
+
+// auth
+app.use('/api/v1/auth' , authRoutes); // open to public...
+
+// RBAC (for admin controll...)
+app.use('/api/v1/rbac/tables' , apptableRoutes);
+app.use('/api/v1/rbac/operations', operationRoutes);
+app.use('/api/v1/rbac/permission' , permissionRoutes);
+app.use('/api/v1/rbac/role', roleRoutes);
+app.use('/api/v1/rbac/assign/', assignRoleRoutes); // post request will assign , delete request will de-assign that role from user ...
+
+
+app.listen(PORT, () => console.log(`app listening at PORT:${PORT}`));

@@ -1,10 +1,10 @@
 import express from "express";
-import { createOperation } from "../../controllers/rbacControllers/operation.controller.js";
+import { createOperationController } from "../../controllers/rbac/operation.controller.js";
 import { checkForAuthenticationCookie } from "../../middlewares/authentication.middleware.js";
 import { hasPermission } from "../../middlewares/permission.middleware.js";
 
 const router = express.Router();
 
-router.post("/", checkForAuthenticationCookie("token"), hasPermission("Operation" , "CREATE"), createOperation);
+router.post( "/", checkForAuthenticationCookie("token"), hasPermission("Operation", "CREATE"), createOperationController );
 
 export default router;

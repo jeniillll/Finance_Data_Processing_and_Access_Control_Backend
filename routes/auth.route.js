@@ -1,18 +1,18 @@
 import express from "express";
-import { createUser, loginUser, logOutHelper, getUser, deleteUser } from "../controllers/auth.controller.js";
+import { createUserController, loginUserController, logOutController, getUserController, deleteUserController } from "../controllers/auth.controller.js";
 
 import { checkForAuthenticationCookie } from "../middlewares/authentication.middleware.js";
 import { hasPermission } from "../middlewares/permission.middleware.js";
 
 const router = express.Router();
 
-router.post("/signup", createUser);
-router.post("/login", loginUser);
+router.post("/signup", createUserController);
+router.post("/login", loginUserController);
 
-router.get("/logout", logOutHelper);
-router.get("/me", checkForAuthenticationCookie("token"), getUser);
+router.post("/logout", logOutController);
 
-router.delete( "/:userId", checkForAuthenticationCookie("token"), hasPermission("User", "DELETE"), deleteUser
-);
+router.get("/me", checkForAuthenticationCookie("token"), getUserController);
+
+router.delete( "/:userId", checkForAuthenticationCookie("token"), hasPermission("User", "DELETE"), deleteUserController );
 
 export default router;

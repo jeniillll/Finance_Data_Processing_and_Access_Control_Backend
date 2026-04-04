@@ -11,10 +11,9 @@ datasource db {
   provider = "postgresql"
 }
 
-
-//-----------------------------------------------//
-//-----------------  RBAC  ----------------------//
-//-----------------------------------------------//
+//--------------------------------------------------------//
+//-----------------  auth and RBAC  ----------------------//
+//--------------------------------------------------------//
 
 // ----------------------- APP TABLE -----------------------
 model AppTable {
@@ -22,7 +21,7 @@ model AppTable {
   tablename   String @unique
   displayname String @unique
 
-  perms     RolePermission[]
+  perms RolePermission[]
 }
 
 // ----------------------- USER -----------------------
@@ -30,11 +29,12 @@ model User {
   id            Int     @id @default(autoincrement())
   contactnumber String  @unique
   fullname      String
-  email         String @unique
+  email         String  @unique
   password      String
   isDeleted     Boolean @default(false)
 
-  roles           UserRole[]
+  roles            UserRole[]
+  financialEntries FinEntry[]
 }
 
 // ----------------------- ROLE -----------------------
@@ -79,4 +79,50 @@ model RolePermission {
   operation Operation @relation(fields: [operationId], references: [id])
 
   @@unique([roleId, tableId, operationId])
+}
+
+//----------------------------------------------------------//
+//-----------------  Fin-Data tables  ----------------------//
+//----------------------------------------------------------//
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+}
+
+model Department {
+  id             Int    @id @default(autoincrement())
+  departmentName String @unique
+
+  financialEntries FinEntry[]
+}
+
+model Category {
+  id           Int    @id @default(autoincrement())
+  categoryName String @unique
+
+  financialEntries FinEntry[]
+}
+
+model FinEntry {
+  id           Int             @id @default(autoincrement())
+  departmentId Int
+  categoryId   Int
+  amount       Decimal         @db.Decimal(12, 2)
+  type         TransactionType
+  date         DateTime
+  description  String?
+  createdById  Int
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+  isDeleted    Boolean         @default(false)
+
+  createdBy  User       @relation(fields: [createdById], references: [id])
+  department Department @relation(fields: [departmentId], references: [id])
+  category   Category   @relation(fields: [categoryId], references: [id])
+
+  @@index([departmentId])
+  @@index([categoryId])
+  @@index([date])
+  @@index([type])
 }

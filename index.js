@@ -22,6 +22,9 @@ import categoryRoutes from './routes/admin/category.route.js'
 // financial entries
 import finEntryRoutes from './routes/finance/finEntries.route.js'
 
+// analysis
+import analysisRoutes from './routes/finance/analysis.route.js'
+
 
 const app = express();
 const PORT = process.env.PORT;
@@ -47,7 +50,14 @@ app.use('/api/v1/admin/departments', departmentRoutes);
 app.use('/api/v1/admin/assign-dept/', assignDepartmentRoutes);
 app.use('/api/v1/admin/category/', categoryRoutes);
 
+
 // financial entries
-app.use('/api/v1/fin-entries/', finEntryRoutes);
+app.use('/api/v1/finance/', finEntryRoutes);
+
+
+// analysis ...
+app.use('/api/v1/finance/analysis/', analysisRoutes);
+
+
 
 app.listen(PORT, () => console.log(`app listening at PORT:${PORT}`));

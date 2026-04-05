@@ -35,6 +35,7 @@ model User {
 
   roles            UserRole[]
   financialEntries FinEntry[]
+  departments       UserDepartment[]
 }
 
 // ----------------------- ROLE -----------------------
@@ -94,7 +95,20 @@ model Department {
   id             Int    @id @default(autoincrement())
   departmentName String @unique
 
+  users UserDepartment[]
   financialEntries FinEntry[]
+}
+
+model UserDepartment {
+  id           Int     @id @default(autoincrement())
+  userId       Int
+  departmentId Int
+  isDeleted    Boolean @default(false)
+
+  user       User       @relation(fields: [userId], references: [id])
+  department Department @relation(fields: [departmentId], references: [id])
+
+  @@unique([userId, departmentId])
 }
 
 model Category {

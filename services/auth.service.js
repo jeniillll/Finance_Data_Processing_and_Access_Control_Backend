@@ -59,6 +59,7 @@ export async function loginUserService(body) {
 
     return {
         statusCode: 200,
+        token: token,
         message: "Login successful"
     };
 }

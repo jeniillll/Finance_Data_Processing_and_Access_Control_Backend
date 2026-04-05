@@ -1,140 +1,60 @@
-import prisma from "../../prisma/client.js";
+import { getEntriesService, createEntryService, updateEntryService, deleteEntryService } from "../../services/finance/finEntries.service.js";
 
-export async function getEntries(req, res) {
+export async function getEntriesController(req, res) {
     try {
-        const departmentId = req.allowedDepartmentId;
+        const result = await getEntriesService(req.allowedDepartmentId);
 
-        const whereClause = {
-            isDeleted: false,
-            ...(departmentId && { departmentId }),
-        };
-
-        const entries = await prisma.finEntry.findMany({
-            where: whereClause,
-            include: {
-                department: true,
-                category: true,
-            },
-        });
-
-        return res.status(200).json({
-            message: "Got entries!",
-            entries,
+        return res.status(result.statusCode).json({
+            message: result.message,
+            entries: result.entries
         });
     } catch (err) {
         return res.status(500).json({
-            message: "Error getting entries!",
+            message: "Error getting entries"
         });
     }
 }
 
-export async function createEntry(req, res) {
+export async function createEntryController(req, res) {
     try {
-        const { departmentId, categoryId, amount, type, date, description } = req.body;
+        const result = await createEntryService(req.body, req.user.id);
 
-        if (!departmentId || !categoryId || !amount || !type || !date) {
-            return res.status(400).json({
-                message: "Missing required fields",
-            });
-        }
-
-        const entry = await prisma.finEntry.create({
-            data: {
-                departmentId: Number(departmentId),
-                categoryId: Number(categoryId),
-                amount,
-                type,
-                date: new Date(date),
-                description,
-                createdById: req.user.id,
-            },
-            include: {
-                department: true,
-                category: true,
-            },
-        });
-
-        return res.status(201).json({
-            message: "Financial entry created successfully",
-            entry,
+        return res.status(result.statusCode).json({
+            message: result.message,
+            entry: result.entry
         });
     } catch (err) {
         return res.status(500).json({
-            message: "Error creating financial entry",
+            message: "Error creating financial entry"
         });
     }
 }
 
-export async function updateEntry(req, res) {
+export async function updateEntryController(req, res) {
     try {
-        const id = Number(req.params.id);
+        const result = await updateEntryService(req.params.id, req.body);
 
-        const { departmentId, categoryId, amount, type, date, description } = req.body;
-
-        const existing = await prisma.finEntry.findUnique({
-            where: { id },
-        });
-
-        if (!existing || existing.isDeleted) {
-            return res.status(404).json({
-                message: "Entry not found",
-            });
-        }
-
-        const updatedEntry = await prisma.finEntry.update({
-            where: { id },
-            data: {
-                ...(departmentId && { departmentId: Number(departmentId) }),
-                ...(categoryId && { categoryId: Number(categoryId) }),
-                ...(amount && { amount }),
-                ...(type && { type }),
-                ...(date && { date: new Date(date) }),
-                ...(description !== undefined && { description }),
-            },
-            include: {
-                department: true,
-                category: true,
-            },
-        });
-
-        return res.status(200).json({
-            message: "Entry updated successfully",
-            entry: updatedEntry,
+        return res.status(result.statusCode).json({
+            message: result.message,
+            entry: result.entry
         });
     } catch (err) {
         return res.status(500).json({
-            message: "Error updating entry",
+            message: "Error updating entry"
         });
     }
 }
 
-export async function deleteEntry(req, res) {
+export async function deleteEntryController(req, res) {
     try {
-        const id = Number(req.params.id);
+        const result = await deleteEntryService(req.params.id);
 
-        const existing = await prisma.finEntry.findUnique({
-            where: { id },
-        });
-
-        if (!existing || existing.isDeleted) {
-            return res.status(404).json({
-                message: "Entry not found",
-            });
-        }
-
-        await prisma.finEntry.update({
-            where: { id },
-            data: {
-                isDeleted: true,
-            },
-        });
-
-        return res.status(200).json({
-            message: "Entry deleted successfully",
+        return res.status(result.statusCode).json({
+            message: result.message
         });
     } catch (err) {
         return res.status(500).json({
-            message: "Error deleting entry",
+            message: "Error deleting entry"
         });
     }
 }

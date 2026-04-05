@@ -1,0 +1,79 @@
+import { findEntries, createFinEntry, findEntryById, updateFinEntry, softDeleteFinEntry } from "../../repositories/finance/finEntries.repository.js";
+
+export async function getEntriesService(departmentId) {
+    const entries = await findEntries(departmentId);
+
+    return {
+        statusCode: 200,
+        message: "Got entries",
+        entries
+    };
+}
+
+export async function createEntryService(body, userId) {
+    const { departmentId, categoryId, amount, type, date, description } = body;
+
+    if (!departmentId || !categoryId || !amount || !type || !date) {
+        return {
+            statusCode: 400,
+            message: "Missing required fields"
+        };
+    }
+
+    const entry = await createFinEntry({
+        departmentId: Number(departmentId),
+        categoryId: Number(categoryId),
+        amount,
+        type,
+        date: new Date(date),
+        description,
+        createdById: userId
+    });
+
+    return {
+        statusCode: 201,
+        message: "Financial entry created successfully",
+        entry
+    };
+}
+
+export async function updateEntryService(id, body) {
+    const entryId = Number(id);
+
+    const existing = await findEntryById(entryId);
+
+    if (!existing || existing.isDeleted) {
+        return {
+            statusCode: 404,
+            message: "Entry not found"
+        };
+    }
+
+    const updatedEntry = await updateFinEntry(entryId, body);
+
+    return {
+        statusCode: 200,
+        message: "Entry updated successfully",
+        entry: updatedEntry
+    };
+}
+
+export async function deleteEntryService(id) {
+    const entryId = Number(id);
+
+    const existing = await findEntryById(entryId);
+
+    if (!existing || existing.isDeleted) {
+        return {
+            statusCode: 404,
+            message: "Entry not found"
+        };
+    }
+
+    await softDeleteFinEntry(entryId);
+
+    return {
+        statusCode: 200,
+        message: "Entry deleted successfully"
+    };
+}

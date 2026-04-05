@@ -1,21 +1,21 @@
-import express from 'express';
+import express from "express";
 
-import { checkForAuthenticationCookie } from '../../middlewares/authentication.middleware.js';
-import { hasPermission } from '../../middlewares/permission.middleware.js';
-import { departmentScope } from '../../middlewares/departmentscope.middleware.js';
+import { checkForAuthenticationCookie } from "../../middlewares/authentication.middleware.js";
+import { hasPermission } from "../../middlewares/permission.middleware.js";
+import { departmentScope } from "../../middlewares/departmentscope.middleware.js";
 
-import { getSummary, getCategoryBreakdown, getTrend, getRecentActivity } from '../../controllers/finance/analysis.controller.js'
+import { getSummaryController, getTrendController, getRecentActivityController, getAnomaliesController } from "../../controllers/finance/analysis.controller.js";
 
 const router = express.Router();
 
-router.use(checkForAuthenticationCookie('token'));
+router.use(checkForAuthenticationCookie("token"));
 
-router.get( "/summary", hasPermission("FinEntry", "READ"), departmentScope(), getSummary);
+router.get("/summary", hasPermission("FinEntry", "READ"), departmentScope(), getSummaryController);
 
-router.get( "/category-breakdown", hasPermission("FinEntry", "READ"), departmentScope(), getCategoryBreakdown);
+router.get("/trend", hasPermission("FinEntry", "READ"), departmentScope(), getTrendController);
 
-router.get( "/trend", hasPermission("FinEntry", "READ"), departmentScope(), getTrend);
+router.get("/recent-activity", hasPermission("FinEntry", "READ"), departmentScope(), getRecentActivityController);
 
-router.get( "/recent-activity", hasPermission("FinEntry", "READ"), departmentScope(), getRecentActivity);
+router.get("/anomalies", hasPermission("FinEntry", "READ"), departmentScope(), getAnomaliesController);
 
 export default router;

@@ -46,6 +46,13 @@ export async function loginUserService(body) {
         };
     }
 
+    if (!user.isActive) {
+        return {
+            statusCode: 403,
+            message: "Your account has been deactivated by admin"
+        };
+    }
+
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {

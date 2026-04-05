@@ -17,6 +17,10 @@ import assignRoleRoutes from './routes/rbacRoutes/userrole.route.js';
 // Admin
 import departmentRoutes from './routes/admin/department.route.js';
 import assignDepartmentRoutes from './routes/admin/userDepartment.route.js';
+import categoryRoutes from './routes/admin/category.route.js'
+
+// financial entries
+import finEntryRoutes from './routes/finance/finEntries.route.js'
 
 
 const app = express();
@@ -41,5 +45,9 @@ app.use('/api/v1/rbac/assign/', assignRoleRoutes); // post request will assign ,
 // Admin
 app.use('/api/v1/admin/departments', departmentRoutes);
 app.use('/api/v1/admin/assign-dept/', assignDepartmentRoutes);
+app.use('/api/v1/admin/category/', categoryRoutes);
+
+// financial entries
+app.use('/api/v1/fin-entries/', finEntryRoutes);
 
 app.listen(PORT, () => console.log(`app listening at PORT:${PORT}`));

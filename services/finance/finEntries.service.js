@@ -1,12 +1,21 @@
 import { findEntries, createFinEntry, findEntryById, updateFinEntry, softDeleteFinEntry } from "../../repositories/finance/finEntries.repository.js";
 
-export async function getEntriesService(departmentId) {
-    const entries = await findEntries(departmentId);
+export async function getEntriesService(departmentId, query) {
+    const page = Number(query.page) || 1;
+    const limit = Number(query.limit) || 10;
+
+    const result = await findEntries(departmentId, query, page, limit);
 
     return {
         statusCode: 200,
         message: "Got entries",
-        entries
+        entries: result.entries,
+        pagination: {
+            page,
+            limit,
+            totalRecords: result.totalRecords,
+            totalPages: Math.ceil(result.totalRecords / limit)
+        }
     };
 }
 

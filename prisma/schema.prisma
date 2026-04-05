@@ -121,7 +121,7 @@ model Category {
 model FinEntry {
   id           Int             @id @default(autoincrement())
   departmentId Int
-  categoryId   Int
+  categoryId   Int?
   amount       Decimal         @db.Decimal(12, 2)
   type         TransactionType
   date         DateTime
@@ -133,7 +133,7 @@ model FinEntry {
 
   createdBy  User       @relation(fields: [createdById], references: [id])
   department Department @relation(fields: [departmentId], references: [id])
-  category   Category   @relation(fields: [categoryId], references: [id])
+  category   Category?   @relation(fields: [categoryId], references: [id])
 
   @@index([departmentId])
   @@index([categoryId])

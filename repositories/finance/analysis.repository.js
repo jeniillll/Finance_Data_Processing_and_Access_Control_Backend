@@ -1,14 +1,8 @@
 import prisma from "../../prisma/client.js";
+import { buildFinEntryFilters } from "../../utils/buildFinEntryFilters.js";
 
-function getBaseWhere(departmentId) {
-    return {
-        isDeleted: false,
-        ...(departmentId && { departmentId })
-    };
-}
-
-export async function getIncomeExpenseSummary(departmentId) {
-    const baseWhere = getBaseWhere(departmentId);
+export async function getIncomeExpenseSummary(departmentId, query) {
+    const baseWhere = buildFinEntryFilters(query, departmentId);
 
     const incomeResult = await prisma.finEntry.aggregate({
         where: { ...baseWhere, type: "INCOME" },
@@ -26,7 +20,9 @@ export async function getIncomeExpenseSummary(departmentId) {
     };
 }
 
-export async function getTrendEntries(departmentId, range) {
+export async function getTrendEntries(departmentId, range, query) {
+    const where = buildFinEntryFilters(query, departmentId);
+
     const now = new Date();
     let startDate = null;
 
@@ -45,18 +41,24 @@ export async function getTrendEntries(departmentId, range) {
             break;
     }
 
+    if (startDate) {
+        where.date = {
+            ...(where.date || {}),
+            gte: startDate
+        };
+    }
+
     return prisma.finEntry.findMany({
-        where: {
-            ...getBaseWhere(departmentId),
-            ...(startDate && { date: { gte: startDate } })
-        },
+        where,
         orderBy: { date: "asc" }
     });
 }
 
-export async function getRecentEntries(departmentId) {
+export async function getRecentEntries(departmentId, query) {
+    const where = buildFinEntryFilters(query, departmentId);
+
     return prisma.finEntry.findMany({
-        where: getBaseWhere(departmentId),
+        where,
         orderBy: { date: "desc" },
         take: 5,
         include: {
@@ -66,10 +68,12 @@ export async function getRecentEntries(departmentId) {
     });
 }
 
-export async function getAverageExpense(departmentId) {
+export async function getAverageExpense(departmentId, query) {
+    const where = buildFinEntryFilters(query, departmentId);
+
     const avgExpense = await prisma.finEntry.aggregate({
         where: {
-            ...getBaseWhere(departmentId),
+            ...where,
             type: "EXPENSE"
         },
         _avg: {
@@ -80,10 +84,12 @@ export async function getAverageExpense(departmentId) {
     return Number(avgExpense._avg.amount || 0);
 }
 
-export async function getExpenseAnomalies(departmentId, average) {
+export async function getExpenseAnomalies(departmentId, average, query) {
+    const where = buildFinEntryFilters(query, departmentId);
+
     return prisma.finEntry.findMany({
         where: {
-            ...getBaseWhere(departmentId),
+            ...where,
             type: "EXPENSE",
             amount: {
                 gt: average * 1.5

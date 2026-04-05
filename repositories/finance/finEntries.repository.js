@@ -1,18 +1,34 @@
 import prisma from "../../prisma/client.js";
+import { buildFinEntryFilters } from "../../utils/buildFinEntryFilters.js";
 
-export async function findEntries(departmentId) {
-    const whereClause = {
-        isDeleted: false,
-        ...(departmentId && { departmentId })
+export async function findEntries(departmentId, query, page, limit) {
+    const where = buildFinEntryFilters(query, departmentId);
+
+    const skip = (page - 1) * limit;
+
+    const [entries, totalRecords] = await Promise.all([
+        prisma.finEntry.findMany({
+            where,
+            skip,
+            take: limit,
+            orderBy: {
+                date: "desc"
+            },
+            include: {
+                department: true,
+                category: true
+            }
+        }),
+
+        prisma.finEntry.count({
+            where
+        })
+    ]);
+
+    return {
+        entries,
+        totalRecords
     };
-
-    return prisma.finEntry.findMany({
-        where: whereClause,
-        include: {
-            department: true,
-            category: true
-        }
-    });
 }
 
 export async function createFinEntry(data) {

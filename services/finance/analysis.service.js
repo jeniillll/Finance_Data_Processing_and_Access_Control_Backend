@@ -1,7 +1,10 @@
 import { getIncomeExpenseSummary, getTrendEntries, getRecentEntries, getAverageExpense, getExpenseAnomalies } from "../../repositories/finance/analysis.repository.js";
 
-export async function getSummaryService(departmentId) {
-    const { totalIncome, totalExpense } = await getIncomeExpenseSummary(departmentId);
+export async function getSummaryService(departmentId, query) {
+    const { totalIncome, totalExpense } = await getIncomeExpenseSummary(
+        departmentId,
+        query
+    );
 
     return {
         statusCode: 200,
@@ -14,8 +17,8 @@ export async function getSummaryService(departmentId) {
     };
 }
 
-export async function getTrendService(departmentId, range = "month") {
-    const entries = await getTrendEntries(departmentId, range);
+export async function getTrendService(departmentId, range = "month", query) {
+    const entries = await getTrendEntries(departmentId, range, query);
 
     const trendMap = new Map();
 
@@ -52,8 +55,8 @@ export async function getTrendService(departmentId, range = "month") {
     };
 }
 
-export async function getRecentActivityService(departmentId) {
-    const recentActivity = await getRecentEntries(departmentId);
+export async function getRecentActivityService(departmentId, query) {
+    const recentActivity = await getRecentEntries(departmentId, query);
 
     return {
         statusCode: 200,
@@ -62,10 +65,9 @@ export async function getRecentActivityService(departmentId) {
     };
 }
 
-export async function getAnomaliesService(departmentId) {
-    const average = await getAverageExpense(departmentId);
-
-    const anomalies = await getExpenseAnomalies(departmentId, average);
+export async function getAnomaliesService(departmentId, query) {
+    const average = await getAverageExpense(departmentId, query);
+    const anomalies = await getExpenseAnomalies(departmentId, average, query);
 
     return {
         statusCode: 200,

@@ -2,11 +2,15 @@ import { getEntriesService, createEntryService, updateEntryService, deleteEntryS
 
 export async function getEntriesController(req, res) {
     try {
-        const result = await getEntriesService(req.allowedDepartmentId);
+        const result = await getEntriesService(
+            req.allowedDepartmentId,
+            req.query
+        );
 
         return res.status(result.statusCode).json({
             message: result.message,
-            entries: result.entries
+            entries: result.entries,
+            pagination: result.pagination
         });
     } catch (err) {
         return res.status(500).json({

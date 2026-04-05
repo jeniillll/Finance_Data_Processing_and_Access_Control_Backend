@@ -22,13 +22,6 @@ export async function getEntriesService(departmentId, query) {
 export async function createEntryService(body, userId) {
     const { departmentId, categoryId, amount, type, date, description } = body;
 
-    if (!departmentId || !categoryId || !amount || !type || !date) {
-        return {
-            statusCode: 400,
-            message: "Missing required fields"
-        };
-    }
-
     const entry = await createFinEntry({
         departmentId: Number(departmentId),
         categoryId: Number(categoryId),

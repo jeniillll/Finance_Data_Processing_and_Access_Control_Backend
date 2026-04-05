@@ -30,16 +30,6 @@ export async function createRole(rolename) {
     return role;
 }
 
-export async function removeRole(roleId) {
-    const deletedRole = await prisma.role.delete({
-        where: {
-            id: roleId
-        }
-    });
-
-    return deletedRole;
-}
-
 export async function findAllRoles() {
     const roles = await prisma.role.findMany();
 

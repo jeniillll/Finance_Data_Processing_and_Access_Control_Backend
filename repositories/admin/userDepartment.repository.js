@@ -27,23 +27,27 @@ export async function findUserDepartment(userId, departmentId) {
     return userDepartmt;
 }
 
-export async function assignDepartmentToUser(userId, departmentId) {
+export async function createUserDepartment(userId, departmentId) {
     const newUserDept = await prisma.userDepartment.create({
         data: {
             userId,
-            departmentId
+            departmentId,
+            isDeleted: false
         }
     });
     return newUserDept;
 }
 
-export async function deassignDepartmentFromUser(userId, departmentId) {
-    const deletedUserDept = await prisma.userDepartment.delete({
+export async function updateUserDepartment(userId, departmentId, isDeleted) {
+    const deletedUserDept = await prisma.userDepartment.update({
         where: {
             userId_departmentId: {
                 userId,
                 departmentId
             }
+        },
+        data: {
+            isDeleted
         }
     });
     return deletedUserDept;

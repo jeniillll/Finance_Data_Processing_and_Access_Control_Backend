@@ -8,11 +8,11 @@ dotenv.config();
 import authRoutes from './routes/auth.route.js';
 
 // rbac
-import apptableRoutes from './routes/rbacRoutes/apptable.routes.js';
-import permissionRoutes from './routes/rbacRoutes/permission.routes.js';
-import operationRoutes from './routes/rbacRoutes/operation.routes.js';
-import roleRoutes from './routes/rbacRoutes/role.route.js';
-import assignRoleRoutes from './routes/rbacRoutes/userrole.route.js';
+import apptableRoutes from './routes/rbac/apptable.routes.js';
+import permissionRoutes from './routes/rbac/permission.routes.js';
+import operationRoutes from './routes/rbac/operation.routes.js';
+import roleRoutes from './routes/rbac/role.route.js';
+import assignRoleRoutes from './routes/rbac/userrole.route.js';
 
 // Admin
 import departmentRoutes from './routes/admin/department.route.js';

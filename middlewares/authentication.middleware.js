@@ -1,17 +1,37 @@
-import jwt from 'jsonwebtoken';
+import jwt from "jsonwebtoken";
+import { findUserById } from "../repositories/rbac/userrole.repository.js";
 
- // this middleware sets the user in request's body by parsing the token 
 export const checkForAuthenticationCookie = (cookieName) => {
-  return (req, res, next) => {
+  return async (req, res, next) => {
     const token = req.cookies?.[cookieName];
-    if (token) {
-      try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded;
-      } catch (err) {
-        return res.status(401).json({ message: "Invalid or expired authentication token" });
-      }
+
+    if (!token) {
+      return next();
     }
-    next();
+
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+      const user = await findUserById(decoded.id);
+
+      if (!user || user.isDeleted) {
+        return res.status(401).json({
+          message: "User no longer exists"
+        });
+      }
+
+      if (!user.isActive) {
+        return res.status(403).json({
+          message: "Your account has been deactivated by admin"
+        });
+      }
+
+      req.user = decoded;
+      next();
+    } catch {
+      return res.status(401).json({
+        message: "Invalid or expired authentication token"
+      });
+    }
   };
 };

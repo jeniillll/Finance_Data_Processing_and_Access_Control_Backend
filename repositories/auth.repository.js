@@ -47,22 +47,3 @@ export async function assignRoleToUser(userId, roleId) {
         }
     });
 }
-
-export async function findUserById(userId) {
-    return prisma.user.findUnique({
-        where: {
-            id: userId
-        }
-    });
-}
-
-export async function softDeleteUser(userId) {
-    return prisma.user.update({
-        where: {
-            id: userId
-        },
-        data: {
-            isDeleted: true
-        }
-    });
-}

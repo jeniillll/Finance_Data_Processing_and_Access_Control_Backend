@@ -1,4 +1,4 @@
-import { createUserService, loginUserService, deleteUserService } from "../services/auth.service.js";
+import { createUserService, loginUserService } from "../services/auth.service.js";
 
 export async function createUserController(req, res) {
   try {
@@ -32,17 +32,6 @@ export async function loginUserController(req, res) {
   }
 }
 
-export async function deleteUserController(req, res) {
-  try {
-    const result = await deleteUserService(req.params);
-
-    return res.status(result.statusCode).json({
-      message: result.message
-    });
-  } catch (err) {
-    return res.status(500).json({ message: "Delete failed" });
-  }
-}
 
 export function logOutController(req, res) {
   res.clearCookie("token");

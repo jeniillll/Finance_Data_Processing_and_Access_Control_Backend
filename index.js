@@ -18,6 +18,7 @@ import assignRoleRoutes from './routes/rbacRoutes/userrole.route.js';
 import departmentRoutes from './routes/admin/department.route.js';
 import assignDepartmentRoutes from './routes/admin/userDepartment.route.js';
 import categoryRoutes from './routes/admin/category.route.js'
+import userRoutes from './routes/admin/user.route.js';
 
 // financial entries
 import finEntryRoutes from './routes/finance/finEntries.route.js'
@@ -49,7 +50,7 @@ app.use('/api/v1/rbac/assign/', assignRoleRoutes); // post request will assign ,
 app.use('/api/v1/admin/departments', departmentRoutes);
 app.use('/api/v1/admin/assign-dept/', assignDepartmentRoutes);
 app.use('/api/v1/admin/category/', categoryRoutes);
-
+app.use('/api/v1/admin/users/', userRoutes);
 
 // financial entries
 app.use('/api/v1/finance/', finEntryRoutes);

@@ -1,5 +1,5 @@
 import bcrypt from "bcrypt";
-import { findUserByEmail, findUserByEmailOrPhone, createUser, findRoleByName, assignRoleToUser, findUserById, softDeleteUser } from "../repositories/auth.repository.js";
+import { findUserByEmail, findUserByEmailOrPhone, createUser, findRoleByName, assignRoleToUser } from "../repositories/auth.repository.js";
 
 import { createTokenForUser } from "./authentication.js";
 
@@ -39,7 +39,7 @@ export async function loginUserService(body) {
 
     const user = await findUserByEmail(email);
 
-    if (!user) {
+    if (!user || user.isDeleted) {
         return {
             statusCode: 404,
             message: "User not found"
@@ -61,25 +61,5 @@ export async function loginUserService(body) {
         statusCode: 200,
         token: token,
         message: "Login successful"
-    };
-}
-
-export async function deleteUserService(params) {
-    const userId = Number(params.userId);
-
-    const user = await findUserById(userId);
-
-    if (!user || user.isDeleted) {
-        return {
-            statusCode: 404,
-            message: "User not found"
-        };
-    }
-
-    await softDeleteUser(userId);
-
-    return {
-        statusCode: 200,
-        message: "User deleted successfully"
     };
 }

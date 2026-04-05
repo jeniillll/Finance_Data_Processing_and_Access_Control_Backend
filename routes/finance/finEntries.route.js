@@ -12,12 +12,12 @@ const router = express.Router();
 
 router.use(checkForAuthenticationCookie("token"));
 
-router.get( "/entries", hasPermission("FinEntry", "READ"), departmentScope(), getEntriesController );
+router.get( "/", hasPermission("FinEntry", "READ"), departmentScope(), getEntriesController );
 
-router.post( "/entries", hasPermission("FinEntry", "CREATE"), validate(createFinEntrySchema), createEntryController);
+router.post( "/", hasPermission("FinEntry", "CREATE"), validate(createFinEntrySchema), createEntryController);
 
-router.patch( "/entries/:id", hasPermission("FinEntry", "UPDATE"), validate(updateFinEntrySchema), updateEntryController);
+router.patch( "/:id", hasPermission("FinEntry", "UPDATE"), validate(updateFinEntrySchema), updateEntryController);
 
-router.delete( "/entries/:id", hasPermission("FinEntry", "DELETE"), deleteEntryController);
+router.delete( "/:id", hasPermission("FinEntry", "DELETE"), deleteEntryController);
 
 export default router;

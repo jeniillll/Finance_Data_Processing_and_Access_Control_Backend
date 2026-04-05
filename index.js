@@ -53,7 +53,7 @@ app.use('/api/v1/admin/category/', categoryRoutes);
 app.use('/api/v1/admin/users/', userRoutes);
 
 // financial entries
-app.use('/api/v1/finance/', finEntryRoutes);
+app.use('/api/v1/finance/entries', finEntryRoutes);
 
 
 // analysis ...

@@ -1,6 +1,6 @@
 # Finance Data Processing & Access Control Backend
 
-A backend-focused assignment project built with **Node.js, Express, Prisma, and PostgreSQL** that demonstrates:
+A backend-focused project built with **Node.js, Express, Prisma, and PostgreSQL** that demonstrates:
 
 * **authentication using JWT + cookies**
 * **dynamic RBAC (role-based access control)**
@@ -336,8 +336,6 @@ It includes:
 - query parameter examples
 - expected responses
 
-This makes it easy to quickly review and test the complete backend flow.
-
 **Postman Documentation Link:**  
 https://documenter.getpostman.com/view/40573601/2sBXiqEUUa#c8e09136-c805-4813-975d-c38bce30b742
 
@@ -347,7 +345,7 @@ https://documenter.getpostman.com/view/40573601/2sBXiqEUUa#c8e09136-c805-4813-97
 
 1) Dynamic permissions over hardcoded enums
 
-Allows changing access rules with APIs instead of code edits.
+- Allows changing access rules with APIs instead of code edits.
 
 2) Layered architecture
 
